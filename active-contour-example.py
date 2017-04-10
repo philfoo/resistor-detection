@@ -23,7 +23,8 @@ new_scipy = scipy_version[0] > 0 or \
 img = io.imread('resistorbackground.jpg')
 img = rotate(img, -25)
 ## Threshold out non-tan
-img = rgb2hsv(img)for i, row in enumerate(img):
+img = rgb2hsv(img)
+for i, row in enumerate(img):
     for j, pixel in enumerate(row):
         if (pixel[0]<.05 or pixel[0]>.3 or pixel[1]<.1):
             img[i, j][2] = 0
