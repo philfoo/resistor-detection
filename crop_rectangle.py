@@ -1,18 +1,63 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
-from skimage.color import rgb2gray
+import math
+from numpy import linalg
+from skimage.color import rgb2gray, rgb2hsv, hsv2rgb
 from skimage import data
 from skimage.filters import gaussian
 from skimage.segmentation import active_contour
+from skimage.transform import rotate
+from skimage.transform import probabilistic_hough_line
+from skimage.feature import canny
 
 #img = data.astronaut()
-img = cv2.imread("unnamed.png", cv2.IMREAD_COLOR)
-img = rgb2gray(img)
+img = cv2.imread("resistor-blue.jpg", cv2.IMREAD_COLOR)
+### Convert to rgb since IMREAD_COLOR does bgr
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+### Test a rotated input image
+img = rotate(img, 30, mode="edge")
+
+## Threshold out non-tan colors
+'''
+img = rgb2hsv(img)
+for i, row in enumerate(img):
+    for j, pixel in enumerate(row):
+        if (pixel[0]<.05 or pixel[0]>.3 or pixel[1]<.1):
+            img[i, j][2] = 0
+img = hsv2rgb(img)
+'''
+
+## Rotate the image to make the resistor horizontal, probably only works if the orignal image is not rotated past 45 degrees in either direction
+imgGray = rgb2gray(img)
+edges = canny(imgGray)
+lines = probabilistic_hough_line(edges, threshold=10, line_length=100, line_gap=10)
+longestLine = [[], []]
+longestLineLength = 0
+longestLineAngle = 0
+angles = []
+for line in lines:
+    p0, p1 = line
+    l = [[], []]
+    l[0] = p0[0]-p1[0]
+    l[1] = p0[1]-p1[1]
+    length = linalg.norm(l)
+    angle = math.atan2(l[1], l[0])*180/math.pi
+    angles.append(angle)
+    if length > longestLineLength:
+        longestLine = l
+        longestLineLength = length
+        longestLineAngle = angle
+angles = list(filter(lambda a: (a > 45 and a < 135) or (a < -45 and a > -135), angles))
+angleToRotate = sum(angles)/len(angles) - 90
+### Can also try the below line for noisy backgrounds
+# angleToRotate = longestLineAngle - 90
+img = rotate(img, angleToRotate, mode="edge")
+###########
 
 s = np.linspace(0, 2*np.pi, 400)
-x = 220 + 200*np.cos(s)
-y = 200 + 200*np.sin(s)
+x = 300 + 250*np.cos(s)
+y = 150 + 150*np.sin(s)
 init = np.array([x, y]).T
 
 snake = active_contour(gaussian(img, 3),
@@ -37,8 +82,12 @@ fig = plt.figure(figsize=(7, 7))
 ax = fig.add_subplot(111)
 plt.gray()
 ax.imshow(img)
+# ax.imshow(edges)
+# for line in lines:
+#     p0, p1 = line
+#     ax.plot((p0[0], p1[0]), (p0[1], p1[1]))
 ax.plot(init[:, 0], init[:, 1], '--r', lw=3)
-#ax.plot(snake[:, 0], snake[:, 1], '-b', lw=3)
+# ax.plot(snake[:, 0], snake[:, 1], '-b', lw=3)
 ax.plot(a, y1, '-b', lw=3)
 ax.plot(a, y2, '-g', lw=3)
 ax.set_xticks([]), ax.set_yticks([])
@@ -70,4 +119,3 @@ ax.set_xticks([]), ax.set_yticks([])
 ax.axis([0, img.shape[1], img.shape[0], 0])
 '''
 plt.show()
-
