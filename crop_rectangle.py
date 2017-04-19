@@ -9,6 +9,7 @@ from skimage.segmentation import active_contour
 from skimage.transform import rotate
 from skimage.transform import probabilistic_hough_line
 from skimage.feature import canny
+from skimage.io import imsave
 
 
 def cropRectangle(img, init):
@@ -112,4 +113,10 @@ def cropRectangle(img, init):
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, img.shape[1], img.shape[0], 0])
     '''
+    cropx0 = int(xl)
+    cropx1 = int(xr)
+    cropy0 = int(ys_below)
+    cropy1 = int(ys_above)
+    croppedImg = img[cropy0:cropy1, cropx0:cropx1]
+    imsave("output.jpg", croppedImg)
     plt.show()
