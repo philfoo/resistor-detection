@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from skimage.filters import sobel
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
 from skimage import exposure
-from resistor_utilities import findColor
+from resistor_utilities import findColor, getColorDigit, getColorMultiplier, getColorTolerance
 
 ### Constant for thresholding the sobel edges result
 VAL_THRESHOLD_ENTER = 0.3
@@ -97,7 +97,7 @@ def edgeMath(croppedImg):
     fig.tight_layout()
     plt.show()
 
-    ### Get the RGB color values in between the borders
+    ### Try discovering the inner borders of the color bands
     try:
         eight_column_vals = [borders[1], borders[2], borders[5], borders[6], borders[9], borders[10], borders[13], borders[14]]
         print (eight_column_vals)
@@ -109,6 +109,7 @@ def edgeMath(croppedImg):
             print ("Still not enough stripes. Aborting.")
             return
 
+    ### Get the RGB color values in between the borders
     final_colors = []
     for i in range(0, int(num_lines/2)):
         top_bound = eight_column_vals[2*i]
@@ -132,11 +133,29 @@ def edgeMath(croppedImg):
         final_colors.append(rgb_values)
 
     ### Map 4 RGB values to resistor band colors
+    colors = []
     for i in range(0, int(num_lines/2)):
-        findColor(final_colors[i])
+        colors.append(findColor(final_colors[i]))
+
+    ### Make sure the gold/silver at the end of the list
+    if (colors[0] == "gold" or colors[0] == "silver"):
+        colors = colors[::-1]
+    print (colors)
+
+    ### Map colors to numerical meaning
+    colorNumbers = []
+    colorNumbers.append(getColorDigit(colors[0]))
+    colorNumbers.append(getColorDigit(colors[1]))
+    colorNumbers.append(getColorMultiplier(colors[2]))
+    colorNumbers.append(getColorTolerance(colors[3]))
+    print (colorNumbers)
+
+    ### Calculare resistance and tolerance
+    resistance = (colorNumbers[0]+0.1*colorNumbers[1])*colorNumbers[2]
+    tolerance = colorNumbers[3]
 
     ### Return resistance
-    return 9999
+    return resistance, tolerance
 
     # # sliding window size 5 ranges
     # window_size = width / magic_number

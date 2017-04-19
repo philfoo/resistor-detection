@@ -11,13 +11,13 @@ def initializeEllipticSnake(height, width):
     return init
 
 
-def displayResistance(img, resistance):
+def displayResistance(img, resistance, tolerance):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111)
     ax.imshow(img)
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, img.shape[1], img.shape[0], 0])
-    plt.text(img.shape[1]/2, img.shape[0]/2, "$" + str(resistance) + "\Omega$", fontsize=36)
+    plt.text(img.shape[1]/5, img.shape[0]/5, "$" + str(resistance) + "\Omega \pm" + str(tolerance) + "\%$", fontsize=36)
     plt.show()
 
 
@@ -31,39 +31,79 @@ def findColor(rgb_values):
     ORANGE_N = 50
     GOLD_2 = 110
     ZERO = 0
-    print (rgb_values)
+
     #White
     if (rgb_values[0] >= WHITE and rgb_values[1] >= WHITE and rgb_values[2] >= WHITE):
-        print ("white")
+        return "white"
     #Silber
     elif (rgb_values[0] >= SILVER and rgb_values[1] >= SILVER and rgb_values[2] >= SILVER):
-        print ("silver")
+        return "silver"
     #Violet
     elif (rgb_values[0] >= SECONDARY and rgb_values[1] <= SECONDARY and rgb_values[2] >= SECONDARY):
-        print ("violet")
+        return "violet"
     #Yellow
     elif (rgb_values[0] >= YELLOW and rgb_values[1] >= YELLOW and rgb_values[2] <= YELLOW_N):
-        print ("yellow")
+        return "yellow"
     #Gold
     elif (rgb_values[0] >= YELLOW and rgb_values[1] >= GOLD_2 and rgb_values[2] <= YELLOW_N):
-        print ("gold")
+        return "gold"
     #Orange
     elif (rgb_values[0] >= YELLOW and rgb_values[1] >= GREY and rgb_values[2] <= ORANGE_N):
-        print ("orange")
+        return "orange"
     #Brown
     elif (rgb_values[0] >= GREY and rgb_values[1] >= ORANGE_N and rgb_values[2] <= SECONDARY):
-        print ("brown")
+        return "brown"
     #Grey
     elif (rgb_values[0] >= GREY and rgb_values[1] >= GREY and rgb_values[2] >= GREY):
-        print ("grey")
+        return "grey"
     #Red
     elif (max(rgb_values) - min(rgb_values) >= 20):
         if (np.argmax(rgb_values) == 0):
-            print ("red")
+            return "red"
         elif (np.argmax(rgb_values) == 1):
-            print ("green")
+            return "green"
         else:
-            print ("blue")
+            return "blue"
     else:
-        print ("black")
-    return
+        return "black"
+
+
+def getColorDigit(color):
+    return {
+        'black': 0,
+        'brown': 1,
+        'red': 2,
+        'orange': 3,
+        'yellow': 4,
+        'green': 5,
+        'blue': 6,
+        'violet': 7,
+        'grey': 8,
+        'white': 9,
+    }.get(color, 4)
+
+
+def getColorMultiplier(color):
+    return {
+        'black': 1,
+        'brown': 10,
+        'red': 100,
+        'orange': 1000,
+        'yellow': 10000,
+        'green': 100000,
+        'blue': 1000000,
+        'violet': 10000000,
+    }.get(color, 10)
+
+
+def getColorTolerance(color):
+    return {
+        'brown': 1,
+        'red': 2,
+        'green': .5,
+        'blue': .25,
+        'violet': .1,
+        'grey': .05,
+        'gold': 5,
+        'silver': 10,
+    }.get(color, 5)

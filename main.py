@@ -16,8 +16,8 @@ if len(sys.argv) == 2:
 
     init = initializeEllipticSnake(height, width)
     cropRectangle(img, init)
-    resistance = edgeMath("output.jpg")
-    displayResistance(img, resistance)
+    resistance, tolerance = edgeMath("output.jpg")
+    displayResistance(img, resistance, tolerance)
 
 else:
     cap = cv2.VideoCapture(0)
@@ -40,8 +40,8 @@ else:
             ### Convert to rgb since IMREAD_COLOR does bgr
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             cropRectangle(img, init)
-            resistance = edgeMath("output.jpg")
-            displayResistance(img, resistance)
+            resistance, tolerance = edgeMath("output.jpg")
+            displayResistance(img, resistance, tolerance)
 
     cap.release()
     cv2.destroyAllWindows()
