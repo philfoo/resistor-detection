@@ -49,7 +49,7 @@ def cropRectangle(img, init):
     angles = list(filter(lambda a: not(a > 45 and a < 135) and not(a < -45 and a > -135), angles))
     angleToRotate = 0
     if len(angles) != 0:
-        angleToRotate = sum(angles)/len(angles) - 180
+        angleToRotate = sum(angles)/float(len(angles)) - 180
     ### Can also try the below line for noisy backgrounds
     # angleToRotate = longestLineAngle - 180
     if (angleToRotate < 45 and angleToRotate > -45):
@@ -65,10 +65,10 @@ def cropRectangle(img, init):
     ys_below = np.average(ys[ys<ys_avg])
     xlt = np.min(snake[(snake[:,1]>ys_above*0.99),0])
     xlb = np.min(snake[(snake[:,1]<ys_below*1.01),0])
-    xl = (xlt+xlb)/2
+    xl = (xlt+xlb)/2.0
     xrt = np.max(snake[(snake[:,1]>ys_above*0.99),0])
     xrb = np.max(snake[(snake[:,1]<ys_below*1.01),0])
-    xr = (xrt+xrb)/2
+    xr = (xrt+xrb)/2.0
     a = np.linspace(xl,xr,100)
     y1 = ys_above + 0*a
     y2 = ys_below + 0*a
