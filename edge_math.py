@@ -41,13 +41,13 @@ def edgeMath(croppedImg):
             red_sum += img[j, i][2]
             green_sum += img[j, i][1]
             blue_sum += img[j, i][0]
-        print blue_sum
+        # print blue_sum
 
         blue_avg = blue_sum / height
         green_avg = green_sum / height
         red_avg = red_sum / height
 
-        print blue_avg
+        # print blue_avg
         # round
         blue_avg = blue_avg/256.0
         red_avg = red_avg/256.0
@@ -56,7 +56,7 @@ def edgeMath(croppedImg):
         g_array = np.append(g_array, green_avg)
         r_array = np.append(r_array, red_avg)
 
-	print b_array
+	# print b_array
 
     ### Merge RGB channels, for some reason this makes the resistor vertical
     b, g, r = cv2.split(img)
