@@ -4,9 +4,9 @@ import cv2
 
 
 def initializeEllipticSnake(height, width):
-    s = np.linspace(0, 2*np.pi, 400)
-    x = width/2 + width/3*np.cos(s)
-    y = height/2 + height/3*np.sin(s)
+    s = np.linspace(0, 2.0*np.pi, 400.0)
+    x = width/2.0 + width/3.0*np.cos(s)
+    y = height/2.0 + height/3.0*np.sin(s)
     init = np.array([x, y]).T
     init = init.astype(int)
     return init
@@ -73,9 +73,9 @@ def findColorUsingHSV(rgb_values):
     blank_image = np.zeros((1,1,3), np.uint8)
     blank_image[:,:] = (rgb_values[2],rgb_values[1],rgb_values[0])      # (B, G, R)
     hsv_image = cv2.cvtColor(blank_image, cv2.COLOR_BGR2HSV)
-    hue = hsv_image[0][0][0]/180*360
-    sat = hsv_image[0][0][1]/256*100
-    val = hsv_image[0][0][2]/256*100
+    hue = hsv_image[0][0][0]/180.0*360.0
+    sat = hsv_image[0][0][1]/256.0*100.0
+    val = hsv_image[0][0][2]/256.0*100.0
     print (hue, sat, val)
     RED = 12
     BROWN = 28
