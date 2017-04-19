@@ -114,12 +114,14 @@ def edgeMath(croppedImg):
     for i in range(0, int(num_lines/2)):
         top_bound = eight_column_vals[2*i]
         bottom_bound = eight_column_vals[(2*i)+1]
+        range_bound = bottom_bound - top_bound
+        offset = int(range_bound/5)
         blue_sum = 0
         green_sum = 0
         red_sum = 0
         counter = 0
         rgb_values = []
-        for j in range(top_bound, bottom_bound+1):
+        for j in range(top_bound+offset, bottom_bound+1-offset):
             blue_sum += cross_section_array[j][1][2]
             green_sum += cross_section_array[j][1][1]
             red_sum += cross_section_array[j][1][0]
