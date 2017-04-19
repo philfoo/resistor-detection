@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from skimage.filters import sobel
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
 from skimage import exposure
-from resistor_utilities import findColor, getColorDigit, getColorMultiplier, getColorTolerance
+from resistor_utilities import findColor, findColorUsingHSV, getColorDigit, getColorMultiplier, getColorTolerance
 
 ### Constant for thresholding the sobel edges result
 VAL_THRESHOLD_ENTER = 0.3
@@ -131,12 +131,19 @@ def edgeMath(croppedImg):
         rgb_values.append(green_avg)
         rgb_values.append(blue_avg)
         final_colors.append(rgb_values)
+    print (final_colors)
 
     ### Map 4 RGB values to resistor band colors
     colors = []
     for i in range(0, int(num_lines/2)):
-        colors.append(findColor(final_colors[i]))
+        colors.append(findColorUsingHSV(final_colors[i]))
 
+    ### TODO: relax the assumption that one of the ends of the resistor will be gold or silver
+    if (not(colors[0] == "gold" or colors[0] == "silver" or colors[-1] == "gold" or colors[-1] == "silver")):
+        if (colors[-1] == "brown"):
+            colors[-1] = "gold"
+        elif (colors[0] == "brown"):
+            colors[0] = "gold"
     ### Make sure the gold/silver at the end of the list
     if (colors[0] == "gold" or colors[0] == "silver"):
         colors = colors[::-1]
@@ -148,7 +155,6 @@ def edgeMath(croppedImg):
     colorNumbers.append(getColorDigit(colors[1]))
     colorNumbers.append(getColorMultiplier(colors[2]))
     colorNumbers.append(getColorTolerance(colors[3]))
-    print (colorNumbers)
 
     ### Calculare resistance and tolerance
     resistance = (colorNumbers[0]+0.1*colorNumbers[1])*colorNumbers[2]

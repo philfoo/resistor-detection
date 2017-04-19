@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 
 
 def initializeEllipticSnake(height, width):
@@ -57,7 +58,7 @@ def findColor(rgb_values):
     elif (rgb_values[0] >= GREY and rgb_values[1] >= GREY and rgb_values[2] >= GREY):
         return "grey"
     #Red
-    elif (max(rgb_values) - min(rgb_values) >= 20):
+    elif (max(rgb_values) - min(rgb_values) >= 30):
         if (np.argmax(rgb_values) == 0):
             return "red"
         elif (np.argmax(rgb_values) == 1):
@@ -66,6 +67,64 @@ def findColor(rgb_values):
             return "blue"
     else:
         return "black"
+
+
+def findColorUsingHSV(rgb_values):
+    blank_image = np.zeros((1,1,3), np.uint8)
+    blank_image[:,:] = (rgb_values[2],rgb_values[1],rgb_values[0])      # (B, G, R)
+    hsv_image = cv2.cvtColor(blank_image, cv2.COLOR_BGR2HSV)
+    hue = hsv_image[0][0][0]/180*360
+    sat = hsv_image[0][0][1]/256*100
+    val = hsv_image[0][0][2]/256*100
+    print (hue, sat, val)
+    RED = 12
+    BROWN = 28
+    GOLD_VAL = 60
+    ORANGE = 36
+    ORANGE_SAT = 80
+    ORANGE_VAL = 70
+    YELLOW_SAT = 70
+    YELLOW_VAL = 75
+    YELLOW = 68
+    GREEN = 144
+    BLUE = 240
+    VIOLET = 340
+    WHITE_SAT = 20
+    WHITE_VAL = 90
+    SILVER_VAL = 80
+    GRAY_VAL = 30
+    BLACK_VAL = 30
+
+    if (sat <= WHITE_SAT):
+        if (val >= WHITE_VAL):
+            return "white"
+        elif (val >= SILVER_VAL):
+            return "silver"
+        elif (val >= GRAY_VAL):
+            return "grey"
+        else:
+            return "black"
+    elif (val <= BLACK_VAL):
+        return "black"
+    elif (hue >= VIOLET or hue <= RED):
+        return "red"
+    elif (hue >= RED and hue <= YELLOW):
+        if (hue >= ORANGE and (sat >= YELLOW_SAT or val >= YELLOW_VAL)):
+            return "yellow"
+        elif (hue <= ORANGE and sat >= ORANGE_SAT and val >= ORANGE_VAL):
+            return "orange"
+        elif (hue >= BROWN and val >= GOLD_VAL):
+            return "gold"
+        else:
+            return "brown"
+    elif (hue >= YELLOW and hue <= GREEN):
+        return "green"
+    elif (hue >= GREEN and hue <= BLUE):
+        return "blue"
+    elif (hue >= BLUE and hue <= VIOLET):
+        return "violet"
+    else:
+        return "brown"
 
 
 def getColorDigit(color):

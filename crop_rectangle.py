@@ -52,7 +52,8 @@ def cropRectangle(img, init):
         angleToRotate = sum(angles)/len(angles) - 180
     ### Can also try the below line for noisy backgrounds
     # angleToRotate = longestLineAngle - 180
-    img = rotate(img, angleToRotate, mode="edge")
+    if (angleToRotate < 45 and angleToRotate > -45):
+        img = rotate(img, angleToRotate, mode="edge")
     ###########
 
     snake = active_contour(gaussian(img, 3),
