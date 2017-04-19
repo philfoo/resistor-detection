@@ -102,8 +102,12 @@ def edgeMath(croppedImg):
         eight_column_vals = [borders[1], borders[2], borders[5], borders[6], borders[9], borders[10], borders[13], borders[14]]
         print (eight_column_vals)
     except IndexError:
-        print ("Detected less than 4 stripes!")
-        return
+        print ("Detected less than 4 stripes! Assuming that the outer bands are at the edges.")
+        try:
+            eight_column_vals = [0, borders[0], borders[3], borders[4], borders[7], borders[8], borders[11], height-1]
+        except IndexError:
+            print ("Still not enough stripes. Aborting.")
+            return
 
     final_colors = []
     for i in range(0, int(num_lines/2)):

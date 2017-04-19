@@ -22,38 +22,48 @@ def displayResistance(img, resistance):
 
 
 def findColor(rgb_values):
+    WHITE = 240
+    SILVER = 200
+    GREY = 100
+    SECONDARY = 40
+    YELLOW = 160
+    YELLOW_N = 100
+    ORANGE_N = 50
+    GOLD_2 = 110
+    ZERO = 0
     print (rgb_values)
-    #Black
-    if (rgb_values[0] >= 0 and rgb_values[0] < 15 and rgb_values[1] >= 0 and rgb_values[1] < 15 and rgb_values[2] >= 0 and rgb_values[2] < 15):
-        print ("black")
-    #Brown
-    elif (rgb_values[0] >= 75 and rgb_values[0] <= 105 and rgb_values[1] >= 30 and rgb_values[1] <= 60 and rgb_values[2] >= 30 and rgb_values[2] <= 60):
-        print ("brown")
-    #Red
-    elif (rgb_values[0] >= 240 and rgb_values[0] <= 255 and rgb_values[1] >= 0 and rgb_values[1] < 15 and rgb_values[2] >= 0 and rgb_values[2] < 15):
-        print ("red")
-    #Orange
-    elif (rgb_values[0] >= 240 and rgb_values[0] <= 255 and rgb_values[1] >= 112 and rgb_values[1] <= 142 and rgb_values[2] >= 0 and rgb_values[2] <= 15):
-        print ("orange")
-    #Yellow
-    elif (rgb_values[0] >= 240 and rgb_values[0] <= 255 and rgb_values[1] >= 240 and rgb_values[1] <= 255 and rgb_values[2] >= 0 and rgb_values[2] <= 15):
-        print ("yellow")
-    #Green
-    elif (rgb_values[0] >= 0 and rgb_values[0] <= 15 and rgb_values[1] >= 240 and rgb_values[1] <= 255 and rgb_values[2] >= 0 and rgb_values[2] <= 15):
-        print ("green")
-    #Blue
-    elif (rgb_values[0] >= 0 and rgb_values[0] <= 15 and rgb_values[1] >= 0 and rgb_values[1] <= 15 and rgb_values[2] >= 240 and rgb_values[2] <= 255):
-        print ("blue")
-    #Violet
-    elif (rgb_values[0] >= 165 and rgb_values[0] <= 195 and rgb_values[1] >= 55 and rgb_values[1] <= 85 and rgb_values[2] >= 205 and rgb_values[2] <= 235):
-        print ("violet")
-    #Grey
-    elif (rgb_values[0] >= 142 and rgb_values[0] <= 172 and rgb_values[1] >= 132 and rgb_values[1] <= 162 and rgb_values[2] >= 145 and rgb_values[2] <= 175):
-        print ("grey")
     #White
-    elif (rgb_values[0] >= 240 and rgb_values[0] <= 255 and rgb_values[1] >= 240 and rgb_values[1] <= 255 and rgb_values[2] >= 240 and rgb_values[2] <= 255):
+    if (rgb_values[0] >= WHITE and rgb_values[1] >= WHITE and rgb_values[2] >= WHITE):
         print ("white")
+    #Silber
+    elif (rgb_values[0] >= SILVER and rgb_values[1] >= SILVER and rgb_values[2] >= SILVER):
+        print ("silver")
+    #Violet
+    elif (rgb_values[0] >= SECONDARY and rgb_values[1] <= SECONDARY and rgb_values[2] >= SECONDARY):
+        print ("violet")
+    #Yellow
+    elif (rgb_values[0] >= YELLOW and rgb_values[1] >= YELLOW and rgb_values[2] <= YELLOW_N):
+        print ("yellow")
+    #Gold
+    elif (rgb_values[0] >= YELLOW and rgb_values[1] >= GOLD_2 and rgb_values[2] <= YELLOW_N):
+        print ("gold")
+    #Orange
+    elif (rgb_values[0] >= YELLOW and rgb_values[1] >= GREY and rgb_values[2] <= ORANGE_N):
+        print ("orange")
+    #Brown
+    elif (rgb_values[0] >= GREY and rgb_values[1] >= ORANGE_N and rgb_values[2] <= SECONDARY):
+        print ("brown")
+    #Grey
+    elif (rgb_values[0] >= GREY and rgb_values[1] >= GREY and rgb_values[2] >= GREY):
+        print ("grey")
+    #Red
+    elif (max(rgb_values) - min(rgb_values) >= 20):
+        if (np.argmax(rgb_values) == 0):
+            print ("red")
+        elif (np.argmax(rgb_values) == 1):
+            print ("green")
+        else:
+            print ("blue")
     else:
-        print ("not detected")
-    return;
-    
+        print ("black")
+    return
