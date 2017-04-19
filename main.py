@@ -1,23 +1,23 @@
 import cv2
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
 from crop_rectangle import cropRectangle
 from edge_math import edgeMath
-from resistor_utilities import initializeEllipticSnake
+from resistor_utilities import initializeEllipticSnake, displayResistance
 from skimage.transform import rotate
 
 
-if len(sys.argv)==2:
+if len(sys.argv) == 2:
     ### Reads image from a file
     img = cv2.imread(sys.argv[1], cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = rotate(img, 30, mode="edge")
+    # img = rotate(img, 30, mode="edge")
     height, width, depth = img.shape
 
     init = initializeEllipticSnake(height, width)
     cropRectangle(img, init)
-    edgeMath("output.jpg")
+    resistance = edgeMath("output.jpg")
+    displayResistance(img, resistance)
 
 else:
     cap = cv2.VideoCapture(0)
@@ -36,11 +36,12 @@ else:
         k = cv2.waitKey(1)
         if k & 0xFF == ord('q'):
             break
-        elif k & 0xFF == ord('e'):
+        elif (k & 0xFF == ord('e')) or (k & 0xFF == ord(' ')):
             ### Convert to rgb since IMREAD_COLOR does bgr
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             cropRectangle(img, init)
-            edgeMath("output.jpg")
+            resistance = edgeMath("output.jpg")
+            displayResistance(img, resistance)
 
     cap.release()
     cv2.destroyAllWindows()

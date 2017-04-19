@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def initializeEllipticSnake(height, width):
@@ -8,6 +9,17 @@ def initializeEllipticSnake(height, width):
     init = np.array([x, y]).T
     init = init.astype(int)
     return init
+
+
+def displayResistance(img, resistance):
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+    ax.imshow(img)
+    ax.set_xticks([]), ax.set_yticks([])
+    ax.axis([0, img.shape[1], img.shape[0], 0])
+    plt.text(img.shape[1]/2, img.shape[0]/2, "$" + str(resistance) + "\Omega$", fontsize=36)
+    plt.show()
+
 
 def findColor(rgb_values):
     print (rgb_values)

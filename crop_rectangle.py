@@ -120,3 +120,5 @@ def cropRectangle(img, init):
     croppedImg = img[cropy0:cropy1, cropx0:cropx1]
     imsave("output.jpg", croppedImg)
     plt.show()
+
+    return croppedImg
