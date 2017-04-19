@@ -10,9 +10,8 @@ from skimage.transform import rotate
 from skimage.transform import probabilistic_hough_line
 from skimage.feature import canny
 
-def cropRectangle(img):
-    ### Convert to rgb since IMREAD_COLOR does bgr
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+def cropRectangle(img, init):
     ### Test a rotated input image
     # img = rotate(img, 30, mode="edge")
 
@@ -46,19 +45,14 @@ def cropRectangle(img):
             longestLine = l
             longestLineLength = length
             longestLineAngle = angle
-    angles = list(filter(lambda a: (a > 45 and a < 135) or (a < -45 and a > -135), angles))
+    angles = list(filter(lambda a: not(a > 45 and a < 135) and not(a < -45 and a > -135), angles))
     angleToRotate = 0
     if len(angles) != 0:
-        angleToRotate = sum(angles)/len(angles) - 90
+        angleToRotate = sum(angles)/len(angles) - 180
     ### Can also try the below line for noisy backgrounds
-    # angleToRotate = longestLineAngle - 90
+    # angleToRotate = longestLineAngle - 180
     img = rotate(img, angleToRotate, mode="edge")
     ###########
-
-    s = np.linspace(0, 2*np.pi, 400)
-    x = 300 + 250*np.cos(s)
-    y = 150 + 150*np.sin(s)
-    init = np.array([x, y]).T
 
     snake = active_contour(gaussian(img, 3),
                            init, alpha=0.015, beta=10, gamma=0.001)
