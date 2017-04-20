@@ -65,13 +65,13 @@ def cropRectangle(img, init):
     ys_below = np.average(ys[ys<ys_avg])
     xlt = np.min(snake[(snake[:,1]>ys_above*0.99),0])
     xlb = np.min(snake[(snake[:,1]<ys_below*1.01),0])
-    xl = (xlt+xlb)/2.0
+    xl = ((xlt+xlb)/2.0)*0.88
     xrt = np.max(snake[(snake[:,1]>ys_above*0.99),0])
     xrb = np.max(snake[(snake[:,1]<ys_below*1.01),0])
-    xr = (xrt+xrb)/2.0
+    xr = ((xrt+xrb)/2.0)*1.05
     a = np.linspace(xl,xr,100)
-    y1 = ys_above + 0*a
-    y2 = ys_below + 0*a
+    y1 = (ys_above + 0*a)*0.9
+    y2 = (ys_below + 0*a)*1.1
 
 
     fig = plt.figure(figsize=(7, 7))
