@@ -97,7 +97,7 @@ def edgeMath(croppedImg):
     ax1.imshow(cross_section_array)
     ax1.set_title('Averaged RGB Values', fontsize=20)
     ax2.imshow(edge_sobel)
-    ax2.set_title('Sobel Filter', fontsize=20)
+    ax2.set_title('Sobel Filter Over RGB Channels', fontsize=20)
     ax3.imshow(edge_eq)
     ax3.set_title('Contrast Stretching on Sobel Filter', fontsize=20)
     fig.tight_layout()

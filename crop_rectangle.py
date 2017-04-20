@@ -14,7 +14,8 @@ from skimage.io import imsave
 
 def cropRectangle(img, init):
     ### Test a rotated input image
-    # img = rotate(img, 30, mode="edge")
+    img = rotate(img, 30, mode="edge")
+    preImg = img
 
     ## Threshold out non-tan colors
     '''
@@ -57,7 +58,7 @@ def cropRectangle(img, init):
     ###########
 
     snake = active_contour(gaussian(img, 3),
-                           init, alpha=0.015, beta=10, gamma=0.001)
+                           init, alpha=0.003, beta=10, gamma=0.001, w_line=0, w_edge=0.5, max_px_move=5.0)
     x_avg = np.average(snake[:,0]);
     ys = snake[(snake[:,0]>x_avg*0.9) & (snake[:,0]<x_avg*1.1),1]
     ys_avg = np.average(ys)
@@ -74,20 +75,26 @@ def cropRectangle(img, init):
     y2 = ys_below + 0*a
 
 
-    fig = plt.figure(figsize=(7, 7))
-    ax = fig.add_subplot(111)
-    plt.gray()
+    fig, ((ax1, ax2), (ax3, ax)) = plt.subplots(nrows=2, ncols=2, figsize=(16, 9),
+                                        sharex=True, sharey=True)
     ax.imshow(img)
-    # ax.imshow(edges)
-    # for line in lines:
-    #     p0, p1 = line
-    #     ax.plot((p0[0], p1[0]), (p0[1], p1[1]))
+    ax.set_title('Rotated and Active Countour', fontsize=20)
     ax.plot(init[:, 0], init[:, 1], '--r', lw=3)
     ax.plot(snake[:, 0], snake[:, 1], '-b', lw=3)
     ax.plot(a, y1, '-b', lw=3)
     ax.plot(a, y2, '-g', lw=3)
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, img.shape[1], img.shape[0], 0])
+    ax2.imshow(edges)
+    ax2.set_title('Canny Edges', fontsize=20)
+    for line in lines:
+            p0, p1 = line
+            ax3.plot((p0[0], p1[0]), (p0[1], p1[1]))
+    ax3.set_title('Probabilistic Hough Transform', fontsize=20)
+    ax1.imshow(preImg)
+    ax1.set_title('Input Image', fontsize=20)
+    fig.tight_layout()
+    plt.show()
 
     ######################################################################
     # Here we initialize a straight line between two points, `(5, 136)` and
@@ -120,6 +127,5 @@ def cropRectangle(img, init):
     cropy1 = int(ys_above)
     croppedImg = img[cropy0:cropy1, cropx0:cropx1]
     imsave("output.jpg", croppedImg)
-    plt.show()
 
     return croppedImg
