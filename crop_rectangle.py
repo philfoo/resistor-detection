@@ -60,19 +60,21 @@ def cropRectangle(img, init):
     snake = active_contour(gaussian(img, 3),
                            init, alpha=0.003, beta=10, gamma=0.001, w_line=0, w_edge=0.5, max_px_move=5.0)
     x_avg = np.average(snake[:,0]);
-    ys = snake[(snake[:,0]>x_avg*0.9) & (snake[:,0]<x_avg*1.1),1]
+    ys = snake[(snake[:,0]>x_avg*0.8) & (snake[:,0]<x_avg*1.2),1]
     ys_avg = np.average(ys)
     ys_above = np.average(ys[ys>ys_avg])
+    ys_above = (ys_above - ys_avg) * 0.8 + ys_avg
     ys_below = np.average(ys[ys<ys_avg])
+    ys_below = (ys_below - ys_avg) * 0.8 + ys_avg
     xlt = np.min(snake[(snake[:,1]>ys_above*0.99),0])
     xlb = np.min(snake[(snake[:,1]<ys_below*1.01),0])
-    xl = ((xlt+xlb)/2.0)*0.88
+    xl = np.max([xlt,xlb])
     xrt = np.max(snake[(snake[:,1]>ys_above*0.99),0])
     xrb = np.max(snake[(snake[:,1]<ys_below*1.01),0])
-    xr = ((xrt+xrb)/2.0)*1.05
+    xr = np.min([xrt,xrb])
     a = np.linspace(xl,xr,100)
-    y1 = (ys_above + 0*a)*0.8
-    y2 = (ys_below + 0*a)*1.4
+    y1 = ys_above + 0*a
+    y2 = ys_below + 0*a
 
 
     fig, ((ax1, ax2), (ax3, ax)) = plt.subplots(nrows=2, ncols=2, figsize=(16, 9),
