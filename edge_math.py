@@ -78,13 +78,15 @@ def edgeMath(croppedImg):
 
     ### Extract the 16 color transitions
     height, width, depth = edge_eq.shape
+    cushion = height/20.0
     borders = []
     inborder = False
     for i in range(1, height-2):
         edge_val = max(edge_eq[i][1][0], edge_eq[i][1][1], edge_eq[i][1][2])
         if (not(inborder) and edge_val > VAL_THRESHOLD_ENTER):
-            borders.append(i)
-            inborder = True
+        	if (len(borders) < 2 or i > (borders[-2]+cushion)):
+        		borders.append(i)
+        		inborder = True
         elif (inborder and edge_val < VAL_THRESHOLD_EXIT):
             borders.append(i)
             inborder = False

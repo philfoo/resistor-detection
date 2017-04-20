@@ -41,7 +41,7 @@ def findColor(rgb_values):
 		print ("white")
 	return;
 
-img_url = "test1.png"
+img_url = "resistor-images/strip2.png"
 
 #import image
 img = cv2.imread(img_url, 0)
