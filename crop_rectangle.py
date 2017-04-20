@@ -14,7 +14,7 @@ from skimage.io import imsave
 
 def cropRectangle(img, init):
     ### Test a rotated input image
-    img = rotate(img, 30, mode="edge")
+    #img = rotate(img, 30, mode="edge")
     preImg = img
 
     ## Threshold out non-tan colors

@@ -92,7 +92,7 @@ def findColorUsingHSV(rgb_values):
     WHITE_SAT = 50
     WHITE_VAL = 90
     SILVER_VAL = 80
-    GRAY_VAL = 20
+    GRAY_VAL = 23
     BLACK_VAL = 20
 
     if (sat <= WHITE_SAT):
