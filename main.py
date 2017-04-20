@@ -4,7 +4,7 @@ import numpy as np
 from crop_rectangle import cropRectangle
 from edge_math import edgeMath
 from resistor_utilities import initializeEllipticSnake, displayResistance
-from skimage.transform import rotate
+# from skimage.transform import rotate
 
 
 if len(sys.argv) == 2:

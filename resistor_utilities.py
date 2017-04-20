@@ -31,7 +31,6 @@ def findColor(rgb_values):
     YELLOW_N = 100
     ORANGE_N = 50
     GOLD_2 = 110
-    ZERO = 0
 
     #White
     if (rgb_values[0] >= WHITE and rgb_values[1] >= WHITE and rgb_values[2] >= WHITE):
@@ -70,8 +69,8 @@ def findColor(rgb_values):
 
 
 def findColorUsingHSV(rgb_values):
-    blank_image = np.zeros((1,1,3), np.uint8)
-    blank_image[:,:] = (rgb_values[2],rgb_values[1],rgb_values[0])      # (B, G, R)
+    blank_image = np.zeros((1, 1, 3), np.uint8)
+    blank_image[:, :] = (rgb_values[2], rgb_values[1], rgb_values[0])   # (B, G, R)
     hsv_image = cv2.cvtColor(blank_image, cv2.COLOR_BGR2HSV)
     hue = hsv_image[0][0][0]/180.0*360.0
     sat = hsv_image[0][0][1]/256.0*100.0

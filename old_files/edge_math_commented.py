@@ -15,6 +15,7 @@ VAL_THRESHOLD_ENTER = 0.2
 VAL_THRESHOLD_EXIT = 0.15
 ### Number of pixels for the median filter to look at
 MEDIAN_KERNEL = 25
+# magic_number = 39
 num_lines = 8
 
 
@@ -142,6 +143,7 @@ def edgeMath(croppedImg):
     for i in range(0, int(num_lines/2)):
         colors.append(findColorUsingHSV(final_colors[i]))
 
+    print (colors)
     ### TODO: relax the assumption that one of the ends of the resistor will be gold or silver
     if (not(colors[0] == "gold" or colors[0] == "silver" or colors[-1] == "gold" or colors[-1] == "silver")):
         print ("Creating a gold...")
@@ -167,3 +169,68 @@ def edgeMath(croppedImg):
 
     ### Return resistance
     return resistance, tolerance
+
+    # # sliding window size 5 ranges
+    # window_size = width / magic_number
+    # blue_ranges = []
+    # red_ranges = []
+    # green_ranges = []
+    # total_ranges = []
+    # #iterate through all rgb list
+    # for i in range(0, len(cross_section_array)-1-window_size):
+    #     # find min and max 
+    #     max = -1
+    #     min = 257
+    #     for j in range(0, window_size):
+    #         curr = cross_section_array[i+j][1]
+    #         #print(curr)
+    #         if curr > max:
+    #             max = curr
+    #         if curr < min:
+    #             min = curr
+    #     #if (min > max):
+    #         #print (min, max)
+    #     bdiff = int(round(max-min))
+    #     #print(bdiff)
+    #     blue_ranges.append(bdiff)
+
+
+
+    #     # find min and max 
+    #     red_max = -1
+    #     red_min = 257
+
+    #     for j in range(0, window_size):
+    #         curr = cross_section_array[i+j][1]
+    #         #print(curr)
+    #         if curr > red_max:
+    #             red_max = curr
+    #         if curr < red_min:
+    #             red_min = curr
+    #     #if (min > max):
+    #         #print (min, max)
+    #     rdiff = int(round(red_max-red_min))
+    #     #print(rdiff)
+    #     red_ranges.append(rdiff)
+
+
+
+    #     # find min and max 
+    #     gmax = -1
+    #     gmin = 257
+    #     for j in range(0, window_size):
+    #         curr = cross_section_array[i+j][1]
+    #         #print(curr)
+    #         if curr > gmax:
+    #             gmax = curr
+    #         if curr < gmin:
+    #             gmin = curr
+    #     #if (min > max):
+    #         #print (min, max)
+    #     gdiff = int(round(gmax-gmin))
+    #     #print(gdiff)
+    #     green_ranges.append(gdiff)
+
+    #     totaldiff = bdiff+rdiff+gdiff
+    #     print(totaldiff)
+    #     total_ranges.append(totaldiff)

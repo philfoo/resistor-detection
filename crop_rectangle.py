@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 import math
-from numpy import linalg
+# from numpy import linalg
 from skimage.color import rgb2gray, rgb2hsv, hsv2rgb
 from skimage.filters import gaussian
 from skimage.segmentation import active_contour
@@ -13,8 +12,6 @@ from skimage.io import imsave
 
 
 def cropRectangle(img, init):
-    ### Test a rotated input image
-    #img = rotate(img, 30, mode="edge")
     preImg = img
 
     ## Threshold out non-tan colors
@@ -27,27 +24,27 @@ def cropRectangle(img, init):
     img = hsv2rgb(img)
     '''
 
-    ## Rotate the image to make the resistor horizontal, probably only works if the orignal image is not rotated past 45 degrees in either direction
+    ### Rotate the image to make the resistor horizontal, probably only works if the orignal image is not rotated past 45 degrees in either direction
     imgGray = rgb2gray(img)
     edges = canny(imgGray)
     lines = probabilistic_hough_line(edges, threshold=10, line_length=100, line_gap=10)
-    longestLine = [[], []]
-    longestLineLength = 0
-    longestLineAngle = 0
+    # longestLine = [[], []]
+    # longestLineLength = 0
+    # longestLineAngle = 0
     angles = []
     for line in lines:
         p0, p1 = line
         l = [[], []]
         l[0] = p0[0]-p1[0]
         l[1] = p0[1]-p1[1]
-        length = linalg.norm(l)
+        # length = linalg.norm(l)
         angle = math.atan2(l[1], l[0])*180/math.pi
         angles.append(angle)
-        if length > longestLineLength:
-            longestLine = l
-            longestLineLength = length
-            longestLineAngle = angle
-    angles = list(filter(lambda a: not(not(a > 45 and a < 135) and not(a < -45 and a > -135)), angles)) #Only look at vertical-ish lines
+        # if length > longestLineLength:
+        #     longestLine = l
+        #     longestLineLength = length
+        #     longestLineAngle = angle
+    angles = list(filter(lambda a: not(not(a > 45 and a < 135) and not(a < -45 and a > -135)), angles))  # Only look at vertical-ish lines
     angleToRotate = 0
     if len(angles) != 0:
         angleToRotate = sum(angles)/float(len(angles)) - 180
@@ -55,8 +52,8 @@ def cropRectangle(img, init):
     # angleToRotate = longestLineAngle - 180
     if (angleToRotate < 45 and angleToRotate > -45):
         img = rotate(img, angleToRotate, mode="edge")
-    ###########
 
+    ### Run active countour and create bounding box
     snake = active_contour(gaussian(img, 3),
                            init, alpha=0.003, beta=10, gamma=0.001, w_line=0, w_edge=0.5, max_px_move=5.0)
     x_avg = np.average(snake[:,0]);
@@ -76,7 +73,7 @@ def cropRectangle(img, init):
     y1 = ys_above + 0*a
     y2 = ys_below + 0*a
 
-
+    ### Plot results
     fig, ((ax1, ax2), (ax3, ax)) = plt.subplots(nrows=2, ncols=2, figsize=(16, 9),
                                         sharex=True, sharey=True)
     ax.imshow(img)
@@ -123,6 +120,8 @@ def cropRectangle(img, init):
     ax.set_xticks([]), ax.set_yticks([])
     ax.axis([0, img.shape[1], img.shape[0], 0])
     '''
+
+    ### Write to file
     cropx0 = int(xl)
     cropx1 = int(xr)
     cropy0 = int(ys_below)
