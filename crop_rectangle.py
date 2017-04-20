@@ -70,8 +70,8 @@ def cropRectangle(img, init):
     xrb = np.max(snake[(snake[:,1]<ys_below*1.01),0])
     xr = ((xrt+xrb)/2.0)*1.05
     a = np.linspace(xl,xr,100)
-    y1 = (ys_above + 0*a)*0.9
-    y2 = (ys_below + 0*a)*1.1
+    y1 = (ys_above + 0*a)*0.8
+    y2 = (ys_below + 0*a)*1.4
 
 
     fig = plt.figure(figsize=(7, 7))
