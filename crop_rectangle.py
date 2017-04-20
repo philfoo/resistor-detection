@@ -47,7 +47,7 @@ def cropRectangle(img, init):
             longestLine = l
             longestLineLength = length
             longestLineAngle = angle
-    angles = list(filter(lambda a: not(a > 45 and a < 135) and not(a < -45 and a > -135), angles))
+    angles = list(filter(lambda a: not(not(a > 45 and a < 135) and not(a < -45 and a > -135)), angles)) #Only look at vertical-ish lines
     angleToRotate = 0
     if len(angles) != 0:
         angleToRotate = sum(angles)/float(len(angles)) - 180

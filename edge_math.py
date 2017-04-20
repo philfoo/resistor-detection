@@ -4,14 +4,16 @@ import math
 from collections import deque
 from statistics import median
 import matplotlib.pyplot as plt
+from scipy.signal import medfilt
 from skimage.filters import sobel
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
 from skimage import exposure
 from resistor_utilities import findColor, findColorUsingHSV, getColorDigit, getColorMultiplier, getColorTolerance
 
 ### Constant for thresholding the sobel edges result
-VAL_THRESHOLD_ENTER = 0.3
-VAL_THRESHOLD_EXIT = 0.2
+VAL_THRESHOLD_ENTER = 0.2
+VAL_THRESHOLD_EXIT = 0.15
+MEDIAN_KERNEL = 25
 magic_number = 39
 num_lines = 8
 
@@ -25,6 +27,7 @@ def sobel_each(image):
 def edgeMath(croppedImg):
     #import image
     img = cv2.imread(croppedImg)
+    # img = cv2.medianBlur(img,21)
     # img = cv2.imread("resistor-images/noisy_strip1.jpg")
     # img = croppedImg
 
@@ -45,11 +48,10 @@ def edgeMath(croppedImg):
             # red_sum += img[j, i][2]
             # green_sum += img[j, i][1]
             # blue_sum += img[j, i][0]
-            red_vals.append(img[j, i][2])
-            green_vals.append(img[j, i][1])
-            blue_vals.append(img[j, i][0])
+            red_vals.append(int(img[j, i][2]))
+            green_vals.append(int(img[j, i][1]))
+            blue_vals.append(int(img[j, i][0]))
         # print blue_sum
-
         # blue_avg = blue_sum / height
         # green_avg = green_sum / height
         # red_avg = red_sum / height
@@ -69,13 +71,15 @@ def edgeMath(croppedImg):
 	# print b_array
 
     ### Merge RGB channels, for some reason this makes the resistor vertical
-    b, g, r = cv2.split(img)
+    r_array = medfilt(r_array, MEDIAN_KERNEL)
+    g_array = medfilt(g_array, MEDIAN_KERNEL)
+    b_array = medfilt(b_array, MEDIAN_KERNEL)
     cross_section_array = cv2.merge((r_array, g_array, b_array))
-    #print cross_section_array
+
+    # print cross_section_array
 
     ### Stretch the image horizontally to see it better
     cross_section_array = np.tile(cross_section_array, (20, 1))
-    #print (cross_section_array)
     # print (img)
 
     ### Apply a Sobel filter to detect color transitions
@@ -117,6 +121,10 @@ def edgeMath(croppedImg):
 
     ### Try discovering the inner borders of the color bands
     try:
+        ### If symmetical noise bands at edges assume correct bands are in the middle
+        if (len(borders) > 16 and len(borders) % 4 == 0):
+            middle = int(len(borders) / 2)
+            borders = borders[middle-8:middle+8+1]
         eight_column_vals = [borders[1], borders[2], borders[5], borders[6], borders[9], borders[10], borders[13], borders[14]]
         print (eight_column_vals)
     except IndexError:
@@ -132,37 +140,48 @@ def edgeMath(croppedImg):
     for i in range(0, int(num_lines/2)):
         top_bound = eight_column_vals[2*i]
         bottom_bound = eight_column_vals[(2*i)+1]
-        range_bound = bottom_bound - top_bound
-        offset = int(range_bound/5)
-        blue_sum = 0
-        green_sum = 0
-        red_sum = 0
-        counter = 0
+        # range_bound = bottom_bound - top_bound
+        # offset = int(range_bound/5)
+        # blue_sum = 0
+        # green_sum = 0
+        # red_sum = 0
+        # counter = 0
+        blue_vals = []
+        green_vals = []
+        red_vals = []
         rgb_values = []
-        for j in range(top_bound+offset, bottom_bound+1-offset):
-            blue_sum += cross_section_array[j][1][2]
-            green_sum += cross_section_array[j][1][1]
-            red_sum += cross_section_array[j][1][0]
-            counter += 1
-        blue_avg = blue_sum / counter * 256
-        green_avg = green_sum / counter * 256
-        red_avg = red_sum / counter * 256
+        #for j in range(top_bound+offset, bottom_bound+1-offset):
+        for j in range(top_bound, bottom_bound+1):
+            # blue_sum += cross_section_array[j][1][2]
+            # green_sum += cross_section_array[j][1][1]
+            # red_sum += cross_section_array[j][1][0]
+            # counter += 1
+            blue_vals.append(cross_section_array[j][1][2])
+            green_vals.append(cross_section_array[j][1][1])
+            red_vals.append(cross_section_array[j][1][0])
+        # blue_avg = blue_sum / counter * 256
+        # green_avg = green_sum / counter * 256
+        # red_avg = red_sum / counter * 256
+        blue_avg = median(blue_vals) * 256
+        green_avg = median(green_vals) * 256
+        red_avg = median(red_vals) * 256
         rgb_values.append(red_avg)
         rgb_values.append(green_avg)
         rgb_values.append(blue_avg)
         final_colors.append(rgb_values)
-    print (final_colors)
 
     ### Map 4 RGB values to resistor band colors
     colors = []
     for i in range(0, int(num_lines/2)):
         colors.append(findColorUsingHSV(final_colors[i]))
 
+    print (colors)
     ### TODO: relax the assumption that one of the ends of the resistor will be gold or silver
     if (not(colors[0] == "gold" or colors[0] == "silver" or colors[-1] == "gold" or colors[-1] == "silver")):
-        if (colors[-1] == "brown"):
+        print ("Creating a gold...")
+        if (colors[-1] == "brown" or colors[-1] == "grey"):
             colors[-1] = "gold"
-        elif (colors[0] == "brown"):
+        elif (colors[0] == "brown" or colors[-1] == "grey"):
             colors[0] = "gold"
     ### Make sure the gold/silver at the end of the list
     if (colors[0] == "gold" or colors[0] == "silver"):

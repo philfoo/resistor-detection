@@ -77,7 +77,8 @@ def findColorUsingHSV(rgb_values):
     sat = hsv_image[0][0][1]/256.0*100.0
     val = hsv_image[0][0][2]/256.0*100.0
     print (hue, sat, val)
-    RED = 12
+    RED = 15
+    RED_VAL = 40
     BROWN = 28
     GOLD_VAL = 60
     ORANGE = 36
@@ -89,11 +90,11 @@ def findColorUsingHSV(rgb_values):
     GREEN = 144
     BLUE = 240
     VIOLET = 340
-    WHITE_SAT = 50
+    WHITE_SAT = 40
     WHITE_VAL = 90
     SILVER_VAL = 80
-    GRAY_VAL = 23
-    BLACK_VAL = 20
+    GRAY_VAL = 21
+    BLACK_VAL = 21
 
     if (sat <= WHITE_SAT):
         if (val >= WHITE_VAL):
@@ -106,12 +107,12 @@ def findColorUsingHSV(rgb_values):
             return "black"
     elif (val <= BLACK_VAL):
         return "black"
-    elif (hue >= VIOLET or hue <= RED):
+    elif ((hue >= VIOLET or hue <= RED) and val >= RED_VAL):
         return "red"
-    elif (hue >= RED and hue <= YELLOW):
+    elif (hue >= VIOLET or hue <= YELLOW):
         if (hue >= ORANGE and (sat >= YELLOW_SAT or val >= YELLOW_VAL)):
             return "yellow"
-        elif (hue <= ORANGE and sat >= ORANGE_SAT and val >= ORANGE_VAL):
+        elif (hue >= RED and hue <= ORANGE and sat >= ORANGE_SAT and val >= ORANGE_VAL):
             return "orange"
         elif (hue >= BROWN and val >= GOLD_VAL):
             return "gold"
