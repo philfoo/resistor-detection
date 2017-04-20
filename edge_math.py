@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 from collections import deque
+from statistics import median
 import matplotlib.pyplot as plt
 from skimage.filters import sobel
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
@@ -34,18 +35,27 @@ def edgeMath(croppedImg):
     g_array = np.zeros(0, dtype=np.uint8)
     b_array = np.zeros(0, dtype=np.uint8)
     for i in range(0, width-1):
-        red_sum = 0
-        green_sum = 0
-        blue_sum = 0
+        # red_sum = 0
+        # green_sum = 0
+        # blue_sum = 0
+        red_vals = []
+        green_vals = []
+        blue_vals = []
         for j in range(0, height-1):
-            red_sum += img[j, i][2]
-            green_sum += img[j, i][1]
-            blue_sum += img[j, i][0]
+            # red_sum += img[j, i][2]
+            # green_sum += img[j, i][1]
+            # blue_sum += img[j, i][0]
+            red_vals.append(img[j, i][2])
+            green_vals.append(img[j, i][1])
+            blue_vals.append(img[j, i][0])
         # print blue_sum
 
-        blue_avg = blue_sum / height
-        green_avg = green_sum / height
-        red_avg = red_sum / height
+        # blue_avg = blue_sum / height
+        # green_avg = green_sum / height
+        # red_avg = red_sum / height
+        blue_avg = median(blue_vals)
+        green_avg = median(green_vals)
+        red_avg = median(red_vals)
 
         # print blue_avg
         # round
@@ -167,7 +177,7 @@ def edgeMath(croppedImg):
     colorNumbers.append(getColorTolerance(colors[3]))
 
     ### Calculare resistance and tolerance
-    resistance = (colorNumbers[0]+0.1*colorNumbers[1])*colorNumbers[2]
+    resistance = (10*colorNumbers[0]+colorNumbers[1])*colorNumbers[2]
     tolerance = colorNumbers[3]
 
     ### Return resistance
