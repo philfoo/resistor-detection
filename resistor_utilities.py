@@ -79,6 +79,7 @@ def findColorUsingHSV(rgb_values):
     RED = 15
     RED_VAL = 40
     BROWN = 28
+    GOLD_SAT = 48
     GOLD_VAL = 60
     ORANGE = 36
     ORANGE_SAT = 80
@@ -113,7 +114,7 @@ def findColorUsingHSV(rgb_values):
             return "yellow"
         elif (hue >= RED and hue <= ORANGE and sat >= ORANGE_SAT and val >= ORANGE_VAL):
             return "orange"
-        elif (hue >= BROWN and val >= GOLD_VAL):
+        elif (hue >= BROWN and sat >= GOLD_SAT and val >= GOLD_VAL):
             return "gold"
         else:
             return "brown"

@@ -92,7 +92,7 @@ def edgeMath(croppedImg):
     fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(16, 9),
                                         sharex=True, sharey=True)
     ax1.imshow(cross_section_array)
-    ax1.set_title('Averaged RGB Values', fontsize=20)
+    ax1.set_title('Median RGB Values', fontsize=20)
     ax2.imshow(edge_sobel)
     ax2.set_title('Sobel Filter Over RGB Channels', fontsize=20)
     ax3.imshow(edge_eq)

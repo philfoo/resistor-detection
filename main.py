@@ -11,7 +11,7 @@ if len(sys.argv) == 2:
     ### Reads image from a file
     img = cv2.imread(sys.argv[1], cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # img = rotate(img, 30, mode="edge")
+    # img = rotate(img, 25, mode="edge")
     height, width, depth = img.shape
 
     init = initializeEllipticSnake(height, width)

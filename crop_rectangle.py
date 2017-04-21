@@ -47,7 +47,7 @@ def cropRectangle(img, init):
     angles = list(filter(lambda a: not(not(a > 45 and a < 135) and not(a < -45 and a > -135)), angles))  # Only look at vertical-ish lines
     angleToRotate = 0
     if len(angles) != 0:
-        angleToRotate = sum(angles)/float(len(angles)) - 180
+        angleToRotate = sum(angles)/float(len(angles)) - 90
     ### Can also try the below line for noisy backgrounds
     # angleToRotate = longestLineAngle - 180
     if (angleToRotate < 45 and angleToRotate > -45):
